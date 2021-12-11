@@ -7,11 +7,26 @@ exports.getLastLine = (fileName, minLength) => {
     let outStream = new Stream;
     return new Promise((resolve, reject)=> {
         let rl = readline.createInterface(inStream, outStream);
-
+        let lineCount = 0;
         let lastLine = '';
+        
+
+        rl.on('line', function(line) {
+            if (line == '' || line == require("os").EOL) {
+                console.log('eof, last line is', lastLine);
+                return;
+            }
+        
+            lastLine = line;
+        });
+
+        //console.log(rl.cursor);
         rl.on('line', function (line) {
-            if (line.length >= minLength) {
+            console.log(rl.getCursorPos());
+            if (lineCount <= minLength) {
+                console.log(`${lineCount} line = ${line}.`);
                 lastLine = line;
+                lineCount++;
             }
         });
 
